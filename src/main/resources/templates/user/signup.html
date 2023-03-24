@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+<th:block layout:fragment="content">
+    <form id="form">
+        <div>Username</div>
+        <input type="text" id="username" placeholder="Username">
+        <div>Email</div>
+        <input type="text" id="email" placeholder="Email">
+        <div>Password</div>
+        <input type="password" id="password" placeholder="Password">
+        <button type="button" onclick="save()">회원가입</button>
+    </form>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // window.onload = () => {
+        // }
+
+        // 유효성 검사
+        function isValid() {
+            const form = document.getElementById("form");
+
+            if (!form.username.value.trim()) {
+                alert('이름 입력 해');
+                form.username.value = '';
+                form.username.focus();
+                return false;
+            }
+
+            if (!form.email.value.trim()) {
+                alert('이메일 입력 해');
+                form.email.value = '';
+                form.email.focus();
+                return false;
+            }
+
+            if (!form.password.value.trim()) {
+                alert('비번 입력 해');
+                form.password.value = '';
+                form.password.focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        //회원 등록
+        function save() {
+            if (!isValid()) {
+                return false;
+            }
+
+            const form = document.getElementById("form");
+            const params = {
+                username: form.username.value,
+                email: form.email.value,
+                password: form.password.value,
+            };
+            console.log(params)
+            const uri = '/api/users/signup';
+            const method = 'POST';
+
+            fetch(uri, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            }).then(response => {
+                return response.json();
+            }).then((res)=>{
+                console.log(res);
+                location.href = '/users/login';
+            }).catch(error => {
+                alert('오류');
+            })
+        }
+        /*]]>*/
+    </script>
+</th:block>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout}">
+<th:block layout:fragment="content">
+    <form action="/users/login" method="post">
+        <div>아이디</div>
+        <input type="text" id="username" name="username">
+        <div>비밀번호</div>
+        <input type="password" id="password" name="password"><br />
+        <button onclick="login()">로그인</button>
+    </form>
+    <button type="button" onclick="goSignup()">회원 가입</button>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        function goSignup() {
+            location.href='/users/signup';
+        }
+
+        // 유효성 검사
+        function isValid() {
+            const form = document.getElementById("form");
+
+            if (!form.username.value.trim()) {
+                alert('아이디 입력 해');
+                form.username.value = '';
+                form.username.focus();
+                return false;
+            }
+
+            if (!form.password.value.trim()) {
+                alert('비번 입력 해');
+                form.password.value = '';
+                form.password.focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        //로그인
+        function login() {
+            if (!isValid()) {
+                return false;
+            }
+
+            const form = document.getElementById("form");
+            const params = {
+                username: form.username.value,
+                password: form.password.value,
+            };
+            console.log(params)
+            const uri = '/users/login';
+            const method = 'POST';
+
+            fetch(uri, {
+                method: method,
+                body: JSON.stringify(params)
+            }).then(response => {
+                console.log(response)
+                return response.json();
+            }).then((res)=>{
+                console.log(res);
+                location.href = '/board/list';
+            }).catch(error => {
+                console.log(error)
+                alert('오류');
+            })
+        }
+        /*]]>*/
+    </script>
+</th:block>
+</html>
